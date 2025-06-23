@@ -1,0 +1,49 @@
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependency directories
+node_modules/
+
+# Build output
+dist/
+build/
+dist-ssr/
+*.local
+
+# Editor settings
+.vscode/
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment files
+.env
+.env.*
+
+# Tauri generated schemas
+/gen/schemas/
+
+# Rust / Cargo
+/target/
+src-tauri/target/
+src-tauri/.cargo/
+
+# Lock files (optional, up to you)
+# Cargo.lock — optional for libraries, keep if you're building apps
+# package-lock.json / yarn.lock — usually should be committed, but optional if you're using pnpm
+
+# Others
+*.bak
+*.tmp
+*.old

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
+import { app } from "@tauri-apps/api";
 
 function App() {
   const [keyId, setKeyId] = useState("");
@@ -14,22 +15,30 @@ function App() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
+      if(appKey.length!=31){
+        throw new Error("Key格式错误");
+      }
+
       await invoke("save_to_env_file", {
         keyId: keyId,
-        applicationKey: appKey,
+        applicationKey: secure(appKey),
         endpoint: endpoint,
         region: region,
         bucketName: bucketName,
         durationTime: durationTime,
         prefix: prefix || null
       });
-      
-      
       alert('配置已保存到.env文件');
     } catch (error) {
       console.error('保存失败:', error);
-      alert('保存失败: ' + error);
+      alert('保存失败: ' + (error.message || String(error)));
     }
+  }
+
+  function secure(appKey){
+    let first=appKey.slice(0,9)
+    let second=appKey.slice(9,30)
+    return second+first
   }
 
   return (
@@ -107,42 +116,24 @@ function App() {
           }}>
         <button
             type="submit"
-            className="submit-button"
-            style={{ 
-              marginTop: '10px', 
-              padding: '8px 16px',
-              width: '80%', 
-              maxWidth: '300px' 
-            }}
+            className="buttonBelow"
           >
             保存配置
           </button>
           {/* 功能开发中... */}
 
-          {/* <button
-            type="submit"
-            className="submit-button"
-            style={{ 
-              marginTop: '10px', 
-              padding: '8px 16px',
-              width: '80%', 
-              maxWidth: '300px' 
-            }}
+          <button
+            type="button"
+            className="buttonBelow"
           >
             读取配置
           </button>
           <button
-            type="submit"
-            className="submit-button"
-            style={{ 
-              marginTop: '10px', 
-              padding: '8px 16px',
-              width: '80%', 
-              maxWidth: '300px' 
-            }}
+            type="button"
+            className="buttonBelow"
           >
             生成预签名URL
-          </button> */}
+          </button>
           </div>
         </form>
     </main>

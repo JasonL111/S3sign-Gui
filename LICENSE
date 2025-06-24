@@ -186,7 +186,18 @@
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright [yyyy] [name of copyright owner]
+   Copyright 2024 JasonL111
+
+   Third-Party Licenses
+
+      This project makes use of the following third-party libraries:
+
+      1. AWS SDK for Go v2
+         Licensed under the Apache License, Version 2.0. A copy of the license is included in this project.
+
+      2. godotenv
+         Licensed under the MIT License. A copy of the license is included in this project.
+
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

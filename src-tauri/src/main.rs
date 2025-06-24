@@ -4,6 +4,8 @@
 use std::fs;
 use std::io::Write;
 use tauri::command;
+use std::process::Command;
+
 
 #[command]
 fn save_to_env_file(
@@ -28,9 +30,23 @@ fn save_to_env_file(
     Ok(())
 }
 
+#[command]
+fn load_env_file() -> Result<String, String> {
+    fs::read_to_string(".env").map_err(|e| e.to_string())
+}
+
+#[command]
+fn sign() {
+    let mut child = Command::new("go")
+        .args(["run", "main.go"])
+        .current_dir("../src-go")
+        .spawn()
+        .expect("failed to execute go run");
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![save_to_env_file])
+        .invoke_handler(tauri::generate_handler![save_to_env_file,load_env_file,sign])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

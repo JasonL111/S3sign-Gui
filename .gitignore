@@ -47,3 +47,4 @@ src-tauri/.cargo/
 *.bak
 *.tmp
 *.old
+presigned_urls.txt

@@ -2,6 +2,10 @@ import { useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import "./App.css";
 import { app } from "@tauri-apps/api";
+import {Load} from "./Helpers/Load.js"
+import {sign} from "./Helpers/Sign.js"
+import {saveConfig} from "./Helpers/Save.js"
+
 
 function App() {
   const [keyId, setKeyId] = useState("");
@@ -15,70 +19,14 @@ function App() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      if(appKey.length!=31){
-        throw new Error("Key格式错误");
-      }
-
-      await invoke("save_to_env_file", {
-        keyId: keyId,
-        applicationKey: secure(appKey),
-        endpoint: endpoint,
-        region: region,
-        bucketName: bucketName,
-        durationTime: durationTime,
-        prefix: prefix || null
-      });
-      alert('配置已保存到.env文件');
+      await saveConfig({ keyId, appKey, endpoint, region, bucketName, durationTime, prefix });
+      alert("配置已保存到.env文件");
     } catch (error) {
-      console.error('保存失败:', error);
-      alert('保存失败: ' + (error.message || String(error)));
+      console.error("保存失败:", error);
+      alert("保存失败: " + (error.message || String(error)));
     }
   }
 
-  function secure(appKey){
-    let first=appKey.slice(0,9)
-    let second=appKey.slice(9)
-    return second+first
-  }
-  function decrypt(str) {
-    let second = str.slice(0, 21); 
-    let first = str.slice(21);
-    return first + second;
-  }
-async function sign() {
-  try {
-    await invoke("sign");
-    alert("已开始生成");
-  } catch (err) {
-    console.error("执行失败:", err);
-    alert("生成失败: " + (err.message || String(err)));
-  }
-}
-  async function handleLoad() {
-    try {
-      const content = await invoke("load_env_file");
-      const lines = content.split("\n");
-      const data = {};
-      for (const line of lines) {
-        if (line.includes("=")) {
-          const [key, ...rest] = line.split("=");
-          data[key.trim()] = rest.join("=").trim();
-        }
-      }
-      setKeyId(data.KEY_ID || "");
-      setAppKey(decrypt(data.APPLICATION_KEY || ""));
-      setEndpoint(data.ENDPOINT || "");
-      setRegion(data.REGION || "");
-      setBucketName(data.BUCKET_NAME || "");
-      setDurationTime(data.DURATION_TIME || "");
-      setPrefix(data.PREFIX || "");
-
-      alert("配置读取成功");
-    } catch (err) {
-      console.error(err);
-      alert("读取失败: " + (err.message || String(err)));
-    }
-  }
   return (
     <main className="container">
       <h1>S3预签名URL生成工具</h1>
@@ -169,14 +117,22 @@ async function sign() {
           <button
             type="button"
             className="buttonBelow"
-            onClick={handleLoad}
+            onClick={()=>Load({      
+              setKeyId,
+              setAppKey,
+              setEndpoint,
+              setRegion,
+              setBucketName,
+              setDurationTime,
+              setPrefix
+            })}
           >
             读取配置
           </button>
           <button
             type="button"
             className="buttonBelow"
-            onClick={sign}
+            onClick={()=>sign({ keyId, appKey, endpoint, region, bucketName, durationTime, prefix })}
           >
             生成预签名URL
           </button>

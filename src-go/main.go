@@ -26,6 +26,7 @@ import (
 	"log"
 	"os"
 	"time"
+	"strconv"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -78,7 +79,12 @@ func main() {
 	b2Region := os.Getenv("REGION")
 	bucketName := os.Getenv("BUCKET_NAME")
 	prefix := os.Getenv("PREFIX")
-	lifetimeSecs := int64(900) // Presigned URL valid for 5 hour
+	durationStr := os.Getenv("DURATION_TIME")
+	durationHours, err := strconv.ParseInt(durationStr, 10, 64)
+	if err != nil {
+		log.Fatalf("无效的 DURATION_TIME 值: %v", err)
+	}
+	lifetimeSecs := durationHours * 3600
 
 	// Check for required environment variables
 	if b2KeyID == "" || b2ApplicationKey == "" || b2Endpoint == "" || b2Region == "" || bucketName == "" {

@@ -66,6 +66,10 @@ func decryptAppKey(encrypted string) string {
     return prefix + suffix
 }
 
+func writeErrorToOutputFile(msg string) {
+    _ = os.WriteFile("presigned_urls.txt", []byte("ERROR: "+msg), 0644)
+}
+
 func main() {
 	err := godotenv.Load("../src-tauri/.env")
 	if err != nil {
@@ -133,6 +137,7 @@ func main() {
 	outputFile := "presigned_urls.txt"
 	file, err := os.Create(outputFile)
 	if err != nil {
+		writeErrorToOutputFile(fmt.Sprintf("Error loading .env file: %v", err))
 		log.Fatalf("Failed to create output file: %v", err)
 	}
 	defer file.Close()
@@ -141,6 +146,7 @@ func main() {
 	for {
 		output, err := s3Client.ListObjectsV2(context.TODO(), listObjectsInput)
 		if err != nil {
+			writeErrorToOutputFile(fmt.Sprintf("Error loading .env file: %v", err))
 			log.Fatalf("Failed to list objects in bucket %s: %v", bucketName, err)
 		}
 
@@ -155,10 +161,12 @@ func main() {
 			// Write object key and URL to file
 			_, err = file.WriteString("Object Key: " + *item.Key + "\n")
 			if err != nil {
+				writeErrorToOutputFile(fmt.Sprintf("Error loading .env file: %v", err))
 				log.Fatalf("Failed to write to file: %v", err)
 			}
 			_, err = file.WriteString("Presigned URL: " + url + "\n\n")
 			if err != nil {
+				writeErrorToOutputFile(fmt.Sprintf("Error loading .env file: %v", err))
 				log.Fatalf("Failed to write to file: %v", err)
 			}
 		}

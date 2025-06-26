@@ -1,45 +1,51 @@
-# s3sign-ui
-本项目是一个基于 [Tauri](https://tauri.app/) 框架构建的跨平台桌面应用，用于方便地生成 Backblaze（或兼容 S3）对象存储的预签名 URL。
+# S3sign-Gui
 
-前端使用 React + Tauri API，配置通过 `.env` 文件存储，调用 Go 后端逻辑生成签名。
+This project is a cross-platform desktop application built with the [Tauri](https://tauri.app/) framework, designed to easily generate pre-signed URLs for Backblaze (or S3-compatible) object storage.
 
----
+The front end uses React + the Tauri API, with configuration stored in a `.env` file. It invokes Go backend logic to generate the signatures.
 
-## 🧰 功能特性
+## 🧰 Features
 
-- 基于 GUI 图形界面生成 S3 预签名 URL
-- 支持配置保存至 `.env` 文件
-- 支持从 `.env` 读取配置并自动填入表单
-- 提供简单的 `application key` 加密/解密方案
-- 使用 Tauri 调用本地 Go 程序执行签名操作
+- Generate S3 pre-signed URLs via a GUI interface  
+- Save configuration to a `.env` file  
+- Load configuration from `.env` and auto-populate the form  
+- Simple encryption/decryption scheme for the `APPLICATION_KEY`  
+- Use Rust to invoke a local Go program for signature generation  
 
-## ⚙️ 安装与运行
-### 1. 安装依赖
+## ⚙️ Installation & Running
+
+### 1. Environment Setup & Dependency Installation
+
+🔧 Before first run, ensure you have Rust, Go, and Node.js installed:  
+- Node.js >= 18  
+- Rust >= 1.70  
+- Go >= 1.20  
 ```bash
-npm install
+    npm install       # Install front-end dependencies & Tauri CLI  
+    cd src-go  
+    go mod tidy       # Initialize Go dependencies  
 ```
-### 2. 开发模式启动（自动构建前端 & Tauri）
+### 2. Start in Development Mode
 ```bash
-npm run tauri dev
+    npm run tauri dev  
 ```
-🔧 首次运行前请确保系统已安装 Rust 和 Go。
+## 🧪 How It Works
 
+### Save Configuration
 
-## 🧪 功能说明
-### 保存配置
+Click the **Save Configuration** button to write the current form values into the `.env` file in the project root. The `APPLICATION_KEY` will be stored with light encryption.
 
-点击「保存配置」按钮，当前表单内容将写入项目根目录的 .env 文件中。APPLICATION_KEY 会经过轻度加密存储。
+### Load Configuration
 
-### 读取配置
+Click the **Load Configuration** button to read the `.env` file and auto-fill the form fields.
 
-点击「读取配置」将自动读取 .env 并回填到表单中。
-### 生成预签名 URL
-该按钮将触发 Rust 后端调用 Go 程序，读取 .env 配置并生成签名链接
+### Generate Pre-Signed URL
 
-生成过程由 src-go/main.go 控制。
+Click the **Generate Pre-Signed URL** button to send the current form values from the front end to the Rust layer, which then calls the Go program. The Go program reads the `.env` file and generates the signed URL.  
+The generation process is controlled by `src-go/main.go`. The output is saved to `src-go/presigned_urls.txt`.
 
-## 📦 构建发布
+## 📦 Build & Release
 ```bash
-npm run tauri build
+    npm run tauri build  
 ```
-构建后的文件将在 /src-tauri/target/release/bundle/ 
+The built artifacts will be located in `src-tauri/target/release/bundle/`.  

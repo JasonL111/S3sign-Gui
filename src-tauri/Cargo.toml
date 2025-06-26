@@ -1,9 +1,11 @@
 [package]
-name = "tauri-app"
-version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+name = "S3sign-GUI"
+version = "0.2.0"
+description = "A tool with GUI for generating S3 presigned URL "
+authors = ["JasonL111"]
 edition = "2021"
+license = "Apache-2.0"
+rust-version = "1.70"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

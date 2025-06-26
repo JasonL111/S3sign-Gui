@@ -41,12 +41,12 @@ fn sign() {
         .args(["run", "main.go"])
         .current_dir("../src-go")
         .spawn()
-        .expect("failed to execute go run");
+        .expect("failed to execute the sign module");
 }
 
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![save_to_env_file,load_env_file,sign])
         .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .expect("error while running application");
 }
